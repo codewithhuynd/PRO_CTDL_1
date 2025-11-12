@@ -1,0 +1,130 @@
+# =========================================================
+# .gitignore cho đồ án C++ (Visual Studio Console App)
+# =========================================================
+
+# ========================
+# Các thư mục build
+# ========================
+[Bb]in/
+[Oo]bj/
+Debug*/
+Release*/
+x64/
+x86/
+build/
+out/
+ipch/
+*.log
+*.tlog
+*.lastbuildstate
+*.idb
+*.pdb
+*.ilk
+*.aps
+*.pch
+
+# ========================
+# File của Visual Studio
+# ========================
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ========================
+# File tạm & cache
+# ========================
+*.tmp
+*.temp
+*.cache
+*.log
+*.sdf
+*.db
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+
+# ========================
+# File nén hoặc backup
+# ========================
+*.zip
+*.rar
+*.7z
+*.bak
+*.old
+
+# ========================
+# File cấu hình hệ thống
+# ========================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ========================
+# File tự động sinh
+# ========================
+*.obj
+*.exe
+*.dll
+*.lib
+*.exp
+*.manifest
+*.res
+*.idb
+*.ipdb
+*.iobj
+
+# ========================
+# File test, chạy thử
+# ========================
+*.log
+*.out
+*.dat
+
+# ========================
+# Các file dự án cá nhân (nếu có)
+# ========================
+*.aps
+*.ncb
+*.opensdf
+*.unsuccessfulbuild
+
+# ========================
+# Backup Visual Studio
+# ========================
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.tli
+*.tlh
+
+# ========================
+# Các file từ hệ điều hành
+# ========================
+.DS_Store
+Icon?
+Thumbs.db
+ehthumbs.db
+
+# ========================
+# Git
+# ========================
+# Không bỏ qua .gitignore hoặc .gitattributes
+!.gitignore
+!.gitattributes
+
+# ========================
+# Tệp dữ liệu đồ án
+# (nếu bạn có các file dữ liệu nhập/xuất)
+# ========================
+# Giữ lại các file như .txt, .csv, .json nếu cần cho chương trình
+# Nếu muốn bỏ qua tất cả file data sinh ra trong khi chạy:
+# data/
+# *.txt
+# *.csv
+# (bỏ comment nếu bạn không muốn commit file test data)
