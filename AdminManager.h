@@ -16,17 +16,17 @@ class AdminManager
 {
 public:
     AdminManager();
-    bool loginAdmin();
-    void runAdminMenu();
-    void themTaiKhoan();
+    bool loginAdmin(const MyUnorderedMap<std::string, Admin>& admins);
+    void runAdminMenu(DataRepository& mainData);
+    bool addAccountUser(DataRepository& mainData);
+    bool deleteAccountUser(DataRepository& mainData);
+    bool unlockAccountUser(DataRepository& mainData);
     
 
     
 
 private:
-    /*vector<Admin> _listAdmins;  */
-    MyUnorderedMap<string,Admin> _listAdmins;
-    MyUnorderedMap<string, TheTu> _listTheTu;
+    DataRepository mainData;
 };
 
 #endif 

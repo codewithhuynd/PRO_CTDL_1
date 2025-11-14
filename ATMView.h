@@ -8,10 +8,11 @@
 #include"MyUnorderedMap.h"
 #include"User.h"
 #include"Admin.h"
+#include"DataRepository.h"
 
 class ATMView {
 public:
-    
+    UserAccount displayAddUserFrame();
     void enableANSIColors();
 
     string displayMainMenu(); 
@@ -20,7 +21,7 @@ public:
 
     UserAccount displayUserLoginForm(); 
 
-    void displayAdminMenu(); 
+    int displayAdminMenu(); 
 
     void displayUserMenu(); 
 
@@ -32,7 +33,11 @@ public:
 
     void displayTransactionHistory(const std::string& id); 
 
-    string loginFailFrame();
+    string loginAdminFailFrame();
+    string addUserFailFrame();
+    string deleteAccountUserFailFrame();
+    string deleteAccountUserFrame();
+    string unlockAccountUserFrame();
 
 };
 
