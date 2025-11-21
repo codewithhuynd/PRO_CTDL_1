@@ -53,7 +53,8 @@ bool AdminManager::addAccountUser(DataRepository& mainData) {
         if (userCheck != nullptr 
             || !Validation::isValidIDFormat(newUser.getID()) 
             || !Validation::isValidNameFormat(newUser.getAccountName()) 
-            || newUser.getCurrency()!="VND") 
+            || newUser.getCurrency()!="VND"
+            || newUser.getBalance()<0) 
         {
             string strChoice = atmview.addUserFailFrame();
             if (strChoice == "1")
@@ -76,6 +77,7 @@ bool AdminManager::addAccountUser(DataRepository& mainData) {
     idFile << newUser.getAccountName() << "\n";
     idFile << newUser.getBalance()<< "\n";
     idFile << newUser.getCurrency() << "\n";
+    idFile << "KHONG BI KHOA" << "\n";
     idFile.close();
 
     std::ofstream idFile2("LichSu"+newUser.getID() + ".txt");
@@ -94,6 +96,7 @@ bool AdminManager::addAccountUser(DataRepository& mainData) {
         });
     fout.close();
 
+    atmview.addUserSuccessFrame();
     return true;
 }
 
@@ -107,7 +110,7 @@ bool AdminManager::deleteAccountUser(DataRepository& mainData) {
         strID = atmview.deleteAccountUserFrame();
 
         userCheck = listUser.find(strID);
-        if (userCheck == nullptr)
+        if (userCheck == nullptr || !Validation::isValidIDFormat(strID))
         {
             string strChoice = atmview.deleteAccountUserFailFrame();
             if (strChoice == "1")
@@ -143,22 +146,39 @@ bool AdminManager::deleteAccountUser(DataRepository& mainData) {
             fout << id << " " << user.getPin() << '\n';
             });
         fout.close();
-    
+        atmview.deleteUserSuccessFrame();
         return true;
 }
 
 bool AdminManager::unlockAccountUser(DataRepository& mainData) {
     ATMView atmview;
     std::string strID;
+    MyUnorderedMap<std::string, UserAccount> listUserLock = mainData.getUserListLock();
     MyUnorderedMap<std::string, UserAccount> listUser = mainData.getUserList();
-    UserAccount* userPtr = nullptr;
+    UserAccount* userPtr1 = nullptr;
+    UserAccount* userPtr2 = nullptr;
     bool inputCorrect = false;
     while (!inputCorrect) {
-        strID = atmview.unlockAccountUserFrame();
-
-        userPtr = listUser.find(strID); 
-        if (userPtr == nullptr) {
-            std::string strChoice = atmview.deleteAccountUserFailFrame();
+        if (listUserLock.empty()) {
+            atmview.listUsersLockEmpty();
+            /*std::string strChoice = atmview.unlockAccountUserFailFrame();
+            if (strChoice == "1") {
+                continue;
+            }
+            else {
+                return false;
+            }*/
+            return false;
+        }
+        else {
+            atmview.displayListUsersLock(listUserLock);
+            strID = atmview.unlockAccountUserFrame();
+        }
+       
+        userPtr1 = listUser.find(strID);
+        userPtr2 = listUserLock.find(strID); 
+        if (userPtr2 == nullptr) {
+            std::string strChoice = atmview.unlockAccountUserFailFrame();
             if (strChoice == "1") {
                 continue; 
             }
@@ -170,13 +190,27 @@ bool AdminManager::unlockAccountUser(DataRepository& mainData) {
        
         inputCorrect = true;
     }
-    userPtr->setLocked(false);
-
-
+    userPtr1->setLocked(false);
     mainData.setUserList(listUser);
 
+    listUserLock.erase(strID);
+    mainData.setUserListLock(listUserLock);
+    atmview.unlockAccountUserSuccess();
+
+    std::ofstream idFile(strID + ".txt");
+    if (!idFile) {
+        std::cerr << "Khong the tao file " << strID << ".txt\n";
+        return false;
+    }
+    idFile << strID << "\n";
+    idFile << userPtr1->getAccountName() << "\n";
+    idFile << userPtr1->getBalance() << "\n";
+    idFile << userPtr1->getCurrency() << "\n";
+    idFile << "KHONG BI KHOA" << "\n";
+    idFile.close();
     return true;
 }
+
 
 
 void AdminManager::runAdminMenu(DataRepository& mainData)
@@ -205,8 +239,8 @@ void AdminManager::runAdminMenu(DataRepository& mainData)
             unlockAccountUser(mainData);
             break;
 
-        case 5: // Chức năng Thoát
-            return; // Thoát khỏi vòng lặp và hàm menu
+        case 5: 
+            return; 
 
             // Cần xử lý trường hợp default trong switch case [17]
         default:

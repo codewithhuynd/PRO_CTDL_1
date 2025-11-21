@@ -67,6 +67,16 @@ bool DataRepository::loadUserData()
             {
             }
 
+            if (std::getline(infoFile, line))
+            {
+                if (line == "BI KHOA") {
+                    bIsLocked = true;
+                }
+                    
+                else
+                    bIsLocked = false; 
+            }
+
             infoFile.close(); 
         }
         else
@@ -77,6 +87,9 @@ bool DataRepository::loadUserData()
 
         UserAccount newUser(strID, strPin, strTenTaiKhoan, llSoDu, strLoaiTienTe, bIsLocked, bIsFirstLogin);
         this->_listUsers.insert(strID, newUser); 
+        if (newUser.isLocked()) {
+            this->_listUsersLock.insert(strID, newUser);
+        }
     }
 
     ifFile.close();

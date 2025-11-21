@@ -43,9 +43,15 @@ public:
         _listUsers = users;
     }
 
+    const MyUnorderedMap<std::string, UserAccount>& getUserListLock() const { return _listUsersLock; }
+    void setUserListLock(const MyUnorderedMap<std::string, UserAccount>& usersLock) {
+        _listUsersLock = usersLock;
+    }
+
 private:
     MyUnorderedMap<std::string, Admin> _listAdmins;
     MyUnorderedMap<std::string, UserAccount> _listUsers;
+    MyUnorderedMap<std::string, UserAccount> _listUsersLock;
 
     
 };

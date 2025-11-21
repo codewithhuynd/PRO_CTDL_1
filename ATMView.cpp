@@ -166,6 +166,27 @@ void ATMView::displayCardList(const MyUnorderedMap<std::string, UserAccount>& li
     cout << "\033[0m";
 }
 
+void ATMView::displayListUsersLock(const MyUnorderedMap<std::string, UserAccount>& listUsersLock) {
+    enableANSIColors();
+
+    cout << "\033[32;1m"
+        << "\n=============== "
+        << "\033[36;1m"
+        << "DANH SACH TAI KHOAN BI KHOA"
+        << "\033[32;1m"
+        << " ===============" << endl;
+
+    cout << "\033[97m";
+    listUsersLock.for_each([&](const string& id, const UserAccount& user) {
+        cout << "\033[90mID:            \033[0m" << id << "\n";
+        cout << "\033[90mTen tai khoan: \033[0m" << user.getAccountName() << "\n";
+        cout << "\033[90mSo du :        \033[0m" << user.getBalance() << "\n";
+        cout << "\033[90mLoai tien te:  \033[0m" << user.getCurrency() << "\n";
+        cout << "\033[93m===========================================================\n\033[0m";
+        });
+    cout << "\033[0m";
+}
+
 void ATMView::displayUserInfo(const UserAccount& user) {
     enableANSIColors();
 
@@ -257,7 +278,32 @@ string ATMView::addUserFailFrame() {
     cin >> strChoice;
     return strChoice;
 }
+void ATMView::listUsersLockEmpty() {
+    enableANSIColors();
 
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";  
+
+    cout << "|\033[91m             Khong co tai khoan nao bi khoa!             \033[38;5;45m|\n";
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "\033[0m\n";
+
+}
+void ATMView::addUserSuccessFrame() {
+    enableANSIColors();
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "|\033[92;1m               Tao tai khoan moi thanh cong              \033[38;5;45m|\n";
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "\033[0m\n";
+}
 UserAccount ATMView::displayAddUserFrame() {
    
     enableANSIColors();
@@ -281,13 +327,9 @@ UserAccount ATMView::displayAddUserFrame() {
     getline(cin, strTenTaiKhoan); 
 
     cout << "\033[97;1mSo du:         \033[0m";
-    long long lSoDu;
+    string lSoDu;
     cin >> lSoDu;
-    if (cin.fail()) {
-        cin.clear();
-        cin.ignore();
-        return UserAccount("", "", "", 0, "", false, false);
-    }
+    
 
     cout << "\033[97;1mLoai tien te:  \033[0m";
     string strLoaiTienTe;
@@ -295,8 +337,21 @@ UserAccount ATMView::displayAddUserFrame() {
 
     
     cout << "\033[0m";
+    long long soDu;
+    if (Validation::isAllDigits(lSoDu))
+        try {
+        soDu = std::stoll(lSoDu);
+        }
+        catch (const std::out_of_range&) {
+        soDu = -1;
+        }
+    catch (...) {
+        soDu = -1;
+    }
+    else
+        soDu = -1;
 
-    UserAccount newUser(strID, DEFAULT_PIN, strTenTaiKhoan, lSoDu, strLoaiTienTe, false, true);
+    UserAccount newUser(strID, DEFAULT_PIN, strTenTaiKhoan, soDu, strLoaiTienTe, false, true);
     return newUser;
 }
 
@@ -306,14 +361,14 @@ string ATMView::deleteAccountUserFrame() {
 
 
     cout << "\033[32;1m"
-        << "\n=============== "
+        << "\n================ "
         << "\033[36;1m"
         << "NHAP ID TAI KHOAN CAN XOA"
         << "\033[32;1m"
-        << " ===============\n";
-    cout << "\033[36;1m";
+        << " ================\n";
+    cout << "\033[97;1m";
 
-    cout << "ID: ";
+    cout << "ID: \033[0m";
     string strID;
     cin >> strID;
     return strID;
@@ -323,16 +378,34 @@ string ATMView::deleteAccountUserFailFrame() {
     enableANSIColors();
 
     cout << "\033[32;1m";
-    cout << "=============================================================\n";
+    cout << "\033[38;5;45m===========================================================\n";
 
-    cout << "\033[91m";
-    cout << "      ID khong hop le hoac tai khoan khong ton tai           \n";
+    cout << "|\033[91m      ID khong hop le hoac tai khoan khong ton tai       \033[38;5;45m|\n";
 
     cout << "\033[36;1m";
-    cout << "     Nhap [1] de lam lai, nhap phim bat ki de thoat    \n";
+    cout << "|\033[96;1m     Nhap [1] de lam lai, nhap phim bat ki de thoat      \033[38;5;45m|\n";
+
+    cout << "===========================================================\n";
+
+    cout << "\033[0m";
+
+    string strChoice;
+    cin >> strChoice;
+    return strChoice;
+}
+
+string ATMView::unlockAccountUserFailFrame() {
+    enableANSIColors();
 
     cout << "\033[32;1m";
-    cout << "=============================================================\n";
+    cout << "\033[38;5;45m===========================================================\n";
+
+    cout << "|\033[91m      ID khong hop le hoac tai khoan khong bi khoa       \033[38;5;45m|\n";
+
+    cout << "\033[36;1m";
+    cout << "|\033[96;1m     Nhap [1] de lam lai, nhap phim bat ki de thoat      \033[38;5;45m|\n";
+
+    cout << "===========================================================\n";
 
     cout << "\033[0m";
 
@@ -346,15 +419,44 @@ string ATMView::unlockAccountUserFrame() {
 
 
     cout << "\033[32;1m"
-        << "\n=============== "
+        << "\n============== "
         << "\033[36;1m"
         << "NHAP ID TAI KHOAN CAN MO KHOA"
         << "\033[32;1m"
-        << " ===============\n";
-    cout << "\033[36;1m";
+        << " ==============\n";
+    cout << "\033[0m";
 
     cout << "ID: ";
     string strID;
     cin >> strID;
     return strID;
+}
+
+void ATMView::deleteUserSuccessFrame() {
+    enableANSIColors();
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "|\033[92;1m                Xoa tai khoan thanh cong                 \033[38;5;45m|\n";
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "\033[0m\n";
+    
+}
+
+void ATMView::unlockAccountUserSuccess() {
+    enableANSIColors();
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "|\033[92;1m              Mo khoa tai khoan thanh cong               \033[38;5;45m|\n";
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "\033[0m\n";
 }

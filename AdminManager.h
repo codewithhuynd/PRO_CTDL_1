@@ -21,7 +21,6 @@ public:
     bool addAccountUser(DataRepository& mainData);
     bool deleteAccountUser(DataRepository& mainData);
     bool unlockAccountUser(DataRepository& mainData);
-    
 
     
 

@@ -9,6 +9,7 @@
 #include"User.h"
 #include"Admin.h"
 #include"DataRepository.h"
+#include"Validation.h"
 
 class ATMView {
 public:
@@ -38,6 +39,13 @@ public:
     string deleteAccountUserFailFrame();
     string deleteAccountUserFrame();
     string unlockAccountUserFrame();
+    void addUserSuccessFrame();
+    void deleteUserSuccessFrame();
+
+    void displayListUsersLock(const MyUnorderedMap<std::string, UserAccount>& listUsersLock);
+    void listUsersLockEmpty();
+    string unlockAccountUserFailFrame();
+    void unlockAccountUserSuccess();
 
 };
 
