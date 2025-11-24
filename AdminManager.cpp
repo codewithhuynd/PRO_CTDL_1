@@ -85,6 +85,7 @@ bool AdminManager::addAccountUser(DataRepository& mainData) {
         std::cerr << "Khong the tao file LichSu" << newUser.getID() << ".txt\n";
         return false;
     }
+    idFile
     idFile2.close();
 
     ofstream fout(CARD_LIST_FILE_NAME, ios::trunc);
@@ -161,13 +162,6 @@ bool AdminManager::unlockAccountUser(DataRepository& mainData) {
     while (!inputCorrect) {
         if (listUserLock.empty()) {
             atmview.listUsersLockEmpty();
-            /*std::string strChoice = atmview.unlockAccountUserFailFrame();
-            if (strChoice == "1") {
-                continue;
-            }
-            else {
-                return false;
-            }*/
             return false;
         }
         else {
@@ -211,8 +205,6 @@ bool AdminManager::unlockAccountUser(DataRepository& mainData) {
     return true;
 }
 
-
-
 void AdminManager::runAdminMenu(DataRepository& mainData)
 {
     ATMView atmview;
@@ -241,11 +233,8 @@ void AdminManager::runAdminMenu(DataRepository& mainData)
 
         case 5: 
             return; 
-
-            // Cần xử lý trường hợp default trong switch case [17]
         default:
-            // Thông báo lỗi theo yêu cầu [21]
-            cout << "Lua chon khong hop le. Vui long chon lai chuc nang (1-5).\n";
+            cout << "\033[91mLua chon khong hop le. Vui long chon lai chuc nang (1-5).\n";
             break;
         }
     }

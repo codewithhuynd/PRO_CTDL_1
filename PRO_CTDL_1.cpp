@@ -21,12 +21,16 @@ int main()
 
     ATMView mainView;
     AdminManager mainAdminController;
+    UserManager mainUserController;
 
     string strChoice = mainView.displayMainMenu();
     if (strChoice == "1") {
         if (mainAdminController.loginAdmin(mainData.getAdminList())) {
             mainAdminController.runAdminMenu(mainData);
         }
+    }
+    if (strChoice == "2") {
+        UserAccount* currentUser = mainUserController.loginUser(mainData);
     }
     
 

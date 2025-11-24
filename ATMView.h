@@ -24,7 +24,7 @@ public:
 
     int displayAdminMenu(); 
 
-    void displayUserMenu(); 
+    int displayUserMenu(); 
 
     string readPassword();
 
@@ -46,6 +46,9 @@ public:
     void listUsersLockEmpty();
     string unlockAccountUserFailFrame();
     void unlockAccountUserSuccess();
+    long long withdrawMoneyFrame();
+    string withdrawUserFailFrame();
+  
 
 };
 

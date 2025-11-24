@@ -1,318 +1,129 @@
-﻿//#include "UserManager.h"
-//#include <conio.h>
-//#include <windows.h>
-//#include<cstdio>
-//#include <fstream>
-//#include"User.h"
-//#include"AdminManager.h"
-//#include"MyUnorderedMap.h"
-//#include"Constants.h"
-//
-//
-//using namespace std;
-//string readPass()
-//{
-//    string pass;
-//    char ch;
-//
-//    while (true)
-//    {
-//        ch = _getch();
-//
-//        if (ch == 13)
-//        {
-//            cout << endl;
-//            break;
-//        }
-//        else if (ch == 8)
-//        {
-//            if (!pass.empty())
-//            {
-//                pass.pop_back();
-//                cout << "\b \b";
-//            }
-//        }
-//        else
-//        {
-//            pass.push_back(ch);
-//            cout << '*';
-//        }
-//    }
-//    return pass;
-//}
-//
-//UserManager::UserManager()
-//{
-//}
-//
-//bool UserManager::loadUserData()
-//{
-//    ifstream ifFile("THETU_FILE_NAME");
-//
-//    if (!ifFile.is_open())
-//    {
-//        return false;
-//    }
-//
-//    try
-//    {
-//        string strID, strPin;
-//        while (ifFile >> strID >> strPin)
-//        {
-//            // Mở file id.txt để lấy thêm thông tin
-//            string filename = strID + ".txt";
-//            ifstream infoFile(filename);
-//
-//            string tenTaiKhoan = "";
-//            long long soDu = 0.0;
-//            string loaiTienTe = "VND";
-//
-//            if (infoFile.is_open())
-//            {
-//                string line;
-//                // Đọc 4 dòng: id, tên tài khoản, số dư, loại tiền tệ
-//                getline(infoFile, line); // dòng 1: id (bỏ qua)
-//                getline(infoFile, tenTaiKhoan);
-//                getline(infoFile, line);
-//                try {
-//                    soDu = stod(line);
-//                }
-//                catch (...) {
-//                    soDu = 0.0;
-//                }
-//                getline(infoFile, loaiTienTe);
-//                infoFile.close();
-//            }
-//
-//            // Tạo đối tượng UserAccount với dữ liệu đầy đủ
-//            UserAccount newUser(strID, strPin, tenTaiKhoan, soDu, loaiTienTe, false, true);
-//
-//            // Thêm vào danh sách
-//            this->_listUser.insert(strID, newUser);
-//        }
-//    }
-//    catch (...)
-//    {
-//        ifFile.close();
-//        return false;
-//    }
-//
-//    ifFile.close();
-//    return true;
-//}
-//
-//
-//
-//
-//
-//
-//bool UserManager::loginUser()
-//{
-//    if (this->_listUser.empty())
-//    {
-//        cout << "Loi: Khong co du lieu User. Vui long kiem tra file THETU_FILE_NAME" << endl;
-//        return false;
-//    }
-//
-//    // Đếm lần nhập sai theo từng ID (không dùng biến chung)
-//    
-//
-//    while (true)
-//    {
-//        string strInputID;
-//        string strInputPin;
-//
-//        // Bật chế độ hiển thị màu ANSI cho console Windows
-//        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-//        DWORD dwMode = 0;
-//        GetConsoleMode(hOut, &dwMode);
-//        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-//        SetConsoleMode(hOut, dwMode);
-//
-//        // Màu xanh nước biển (cyan)
-//        cout << "\033[34;1m";
-//        cout << "\n\n";
-//
-//        cout << "===================================================================\n";
-//        cout << "|.__                .__                                           |\n";
-//        cout << "||  |   ____   ____ |__| ____    __ __  ______ ___________        |\n";
-//        cout << "||  |  /  _ \\ / ___\\|  |/    \\  |  |  \\/  ___// __ \\_  __ \\       |\n";
-//        cout << "||  |_(  <_> ) /_/  >  |   |  \\ |  |  /\\___ \\\\  ___/|  | \\/       |\n";
-//        cout << "||____/\\____/\\___  /|__|___|  / |____//____  >\\___  >__|          |\n";
-//        cout << "|           /_____/         \\/             \\/     \\/              |\n";
-//        cout << "===================================================================\n";
-//        
-//
-//        cout << "\033[0m";
-//
-//        cout << "| ID: ";
-//        cin >> strInputID;
-//        cout << "|                                                                   |\n";
-//        cout << "=====================================================================\n";
-//
-//        cout << "| Pin: ";
-//        strInputPin = readPass();
-//        cout << "|                                                                   |\n";
-//        cout << "=====================================================================\n";
-//
-//        // Tìm user
-//        auto p = _listUser.find(strInputID);
-//
-//        if (p == nullptr)
-//        {
-//            cout << "Loi: Khong tim thay tai khoan co ID = " << strInputID << "\n";
-//        }
-//        else if (p->isLocked())
-//        {
-//            cout << "Loi: Tai khoan bi khoa. Vui long lien he admin de mo khoa.\n";
-//        }
-//        else
-//        {
-//            // User tồn tại và chưa bị khóa
-//            if (p->getPin() == strInputPin)
-//            {
-//                
-//                // Thành công -> reset counter (nếu có) và trả true
-//                failedAttempts.erase(strInputID);
-//                cout << "=====================================================================\n";
-//                cout << "|                      DANG NHAP USER THANH CONG                    |\n";
-//                cout << "=====================================================================\n";
-//                
-//                // TODO: nếu cần, cập nhật trạng thái first-login -> false: p->setFirstLogin(false);
-//                // TODO: nếu cần ghi thay đổi ra file: saveUserData();
-//                runUserMenu(strInputID);
-//                return true;
-//            }
-//            else
-//            {
-//                // Sai PIN
-//                int* cntPtr = failedAttempts.find(strInputID);
-//                if (cntPtr == nullptr) {
-//                    failedAttempts.insert(strInputID, 1);
-//                    cntPtr = failedAttempts.find(strInputID);
-//                }
-//                else {
-//                    ++(*cntPtr);
-//                }
-//
-//                int attempts = *cntPtr;
-//                int remaining = 3 - attempts;
-//                if (remaining > 0)
-//                {
-//                    cout << "Sai PIN. Con " << remaining << " lan thu viec dang nhap truoc khi khoa tai khoan.\n";
-//                }
-//                else
-//                {
-//                    // Khóa tài khoản
-//                    p->setLocked(true);
-//                    // TODO: persist thay đổi vào file (ví dụ gọi saveUserData() hoặc update file THETU_FILE_NAME)
-//                    cout << "Tai khoan da bi khoa do nhap sai PIN qua so lan cho phep.\n";
-//                }
-//            }
-//        }
-//
-//        // Nếu tới đây là fail -> hỏi người dùng có muốn thử lại (giữ logic của bạn)
-//        cout << "=====================================================================\n";
-//        cout << "|                   [DANG NHAP THAT BAI]                             |\n";
-//        cout << "| NHAP [1] DE DANG NHAP LAI                                          |\n";
-//        cout << "| NHAP [KY TU BAT KY] DE THOAT                                       |\n";
-//        cout << "=====================================================================\n";
-//        cout << "| NHAP TAI DAY: ";
-//        char cChoice;
-//        cin >> cChoice;
-//        cout << "|                                                                   |\n";
-//        cout << "=====================================================================\n";
-//
-//        if (cChoice != '1') return false;
-//
-//        // nếu chọn 1 -> vòng lặp tiếp, người dùng có thể nhập lại
-//    } // end while
-//}
-//
-//void UserManager::unlockUserById(const string& id)
-//{
-//    auto p = _listUser.find(id);
-//    p->setLocked(false);
-//}
-//bool UserManager::isLocked(const string& id) {
-//    auto p = _listUser.find(id);
-//    return p->isLocked();
-//}
-//
-//void UserManager::resetTimesLoginByID(const string& id) {
-//    auto p = failedAttempts.find(id);
-//    *p = 0;
-//}
-//
-//void UserManager::displayUserMenu() {
-//    cout << "\n* * * * * * * * * * * * * * * * * * * * *" << endl;
-//    cout << "*             MENU USER                *" << endl;
-//    cout << "* * * * * * * * * * * * * * * * * * * * *" << endl;
-//
-//    cout << "a. Xem thong tin tai khoan" << endl;
-//    cout << "b. Rut tien" << endl;
-//    cout << "c. Chuyen tien" << endl;
-//    cout << "d. Xem noi dung giao dich" << endl;
-//
-//    cout << "e. Doi ma pin" << endl;
-//    cout << "f. Thoat" << endl;
-//
-//    cout << "* * * * * * * * * * * * * * * * * * * * *" << endl;
-//    cout << "Vui long chon chuc nang (a/b/c/d/e/f): ";
-//}
-//
-//void UserManager::runUserMenu(const string& id)
-//{
-//    // Cần có vòng lặp để Admin có thể thực hiện nhiều chức năng cho đến khi thoát [6]
-//    while (true)
-//    {
-//        // Hàm này sẽ in ra menu (ví dụ: 1. Xem TK, 2. Thêm TK, ...)
-//        displayUserMenu();
-//
-//        // Khai báo và khởi tạo biến để tránh bug "phong thủy" (Debug chạy, Release không chạy) [18, 19]
-//        // Sử dụng Hungarian Notation cho biến local: int iChoice [10, 11]
-//        char iChoice = 0;
-//
-//        cout << "Vui long nhap lua chon: ";
-//        // Xử lý đầu vào (đảm bảo rằng biến được khai báo gần nơi sử dụng [20])
-//        cin >> iChoice;
-//
-//        // Dùng switch cho lựa chọn menu [8]
-//        switch (iChoice)
-//        {
-//        case 'a': // Chức năng a. Xem danh sách Tài khoản [4]
-//            loadUserData();
-//            displayInforUser(id); // Tên method dùng Camel-case [10]
-//            break;
-//
-//        case 'b': // Chức năng b. Thêm Tài Khoản [4]
-//            loadUserData();
-//            rutTien(id);
-//            break;
-//
-//        case 'c': 
-//            loadUserData();
-//            chuyenTien(id);
-//            break;
-//
-//        case 'd': // Chức năng d. Mở khóa Tài Khoản [5]
-//            loadUserData();
-//            inLichSu(id);
-//            break;
-//
-//        case 'e': // Chức năng Thoát
-//            loadUserData();
-//            doiMaPin(id);
-//            break;
-//
-//            // Cần xử lý trường hợp default trong switch case [17]
-//        default:
-//            // Thông báo lỗi theo yêu cầu [21]
-//            cout << "Lua chon khong hop le. Vui long chon lai chuc nang (1-5).\n";
-//            break;
-//        }
-//    }
-//}
+﻿#include "UserManager.h"
+#include <conio.h>
+#include <windows.h>
+#include<cstdio>
+#include <fstream>
+#include"User.h"
+#include"AdminManager.h"
+#include"MyUnorderedMap.h"
+
+UserManager::UserManager(){}
+
+UserAccount UserManager::loginUser(DataRepository& mainData)
+{
+    ATMView atmview;
+    
+
+    while (true) {
+
+        // Hiển thị khung nhập ID + pass
+        loginUserInput = atmview.displayUserLoginFrame();
+
+        // Tìm user theo ID
+        auto userPtr = users.find(loginUserInput.getUser());
+
+        // Không tìm thấy user → sai
+        if (userPtr == nullptr) {
+            string choice = atmview.loginUserFailFrame("Tài khoản không tồn tại!");
+            if (choice == "1") continue;
+            else return nullptr;
+        }
+
+        User& realUser = *userPtr;
+
+        // Kiểm tra tài khoản có bị khóa không
+        if (realUser.isLocked()) {
+            atmview.showMessage("Tài khoản đã bị khóa. Vui lòng liên hệ admin.");
+            return nullptr;
+        }
+
+        // Kiểm tra mật khẩu
+        if (realUser.getPass() != loginUserInput.getPass()) {
+            realUser.increaseFailCount();
+
+            if (realUser.getFailCount() >= 3) {
+                realUser.lockAccount();
+                atmview.showMessage("Nhập sai 3 lần. Tài khoản đã bị khóa!");
+                return nullptr;
+            }
+
+            string choice = atmview.loginUserFailFrame("Sai mật khẩu!");
+            if (choice == "1") continue;
+            else return nullptr;
+        }
+
+        // Đăng nhập thành công
+        realUser.resetFailCount();
+        atmview.showMessage("Đăng nhập thành công!");
+        return &realUser;
+    }
+}
+
+bool UserManager::withdrawMoney(DataRepository& mainData,const UserAccount& currentUser) {
+    ATMView atmview;
+    bool inputCorect = false;
+    long long llSoTienRut;
+    while (!inputCorect) {
+        llSoTienRut = atmview.withdrawMoneyFrame();
+
+        if (llSoTienRut< MIN_WITHDRAWAL_AMOUNT || llSoTienRut>currentUser.getBalance()- MIN_REMAINING_BALANCE || llSoTienRut% MIN_WITHDRAWAL_AMOUNT!=0)
+        {
+            string strChoice = atmview.withdrawUserFailFrame();
+            if (strChoice == "1")
+                continue;
+            else
+                return false;
+        }
+        inputCorect = true;
+    }
+
+    MyUnorderedMap<string, UserAccount> listUser = mainData.getUserList();
+    auto crUser = listUser.find(currentUser.getID());
+    long long newbalance = currentUser.getBalance() - llSoTienRut;
+    crUser->setBalance(newbalance);
+    mainData.setUserList(listUser);
+
+
+
+}
+
+void UserManager::runUserMenu(DataRepository& mainData,const UserAccount& currentUser)
+{
+    ATMView atmview;
+
+    while (true)
+    {
+        int iChoice = atmview.displayAdminMenu();
+
+        switch (iChoice)
+        {
+        case 1:
+            atmview.displayUserInfo(currentUser);
+            break;
+
+        case 2:
+            withdrawMoney();
+            break;
+
+        case 3:
+            deleteAccountUser(mainData);
+            break;
+
+        case 4:
+            unlockAccountUser(mainData);
+            break;*/
+
+        case 5:
+            return;
+
+            // Cần xử lý trường hợp default trong switch case [17]
+        default:
+            // Thông báo lỗi theo yêu cầu [21]
+            cout << "Lua chon khong hop le. Vui long chon lai chuc nang (1-5).\n";
+            break;
+        }
+    }
+}
 //
 //void UserManager::displayInforUser(const string& id) {
 //    string filename = id + ".txt";

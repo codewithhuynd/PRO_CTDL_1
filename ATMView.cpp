@@ -56,7 +56,7 @@ Admin ATMView::displayAdminLoginFrame() {
 
 UserAccount ATMView::displayUserLoginForm() {
     enableANSIColors();
-    cout << "\033[32;1m";
+    cout << "\033[34;1m";
     cout << "\n\n";
 
     cout << "=============================================================\n";
@@ -67,17 +67,17 @@ UserAccount ATMView::displayUserLoginForm() {
     cout << "||____/\\____/\\___  /|__|___|  / |____//____  >\\___  >__|    |\n";
     cout << "|           /_____/         \\/             \\/     \\/        |\n";
     cout << "=============================================================\n";
-    cout << "\033[36;1m";
+    cout << "\033[97;1m";
     string strID;
-    cout << "ID: ";
+    cout << "  USER: \033[0m";
     cin >> strID;
 
     string strPin;
-    cout << "\nPin: ";
+    cout << "\033[97;1m  PASS: \033[0m";
     strPin = readPassword();
-
-    UserAccount user(strID, strPin, "", 0, "", false, false);
-    return user;
+    cout << "\n";
+    UserAccount loginUser(strID, strPin, "", 0, "", false, true);
+    return loginUser;
 }
 
 int ATMView::displayAdminMenu() {
@@ -130,19 +130,23 @@ string ATMView::readPassword()
     return pass;
 }
 
-void ATMView::displayUserMenu() {
+int ATMView::displayUserMenu() {
     enableANSIColors();
-    cout << "\033[32;1m";
-    cout << "=============================================================" << endl;
-    cout << "======================== MENU USER ==========================" << endl;
-    cout << "|\033[36;1m         1. Xem thong tin tai khoan                  \033[32;1m|" << endl;
-    cout << "|\033[36;1m         2. Rut tien                                 \033[32;1m|" << endl;
-    cout << "|\033[36;1m         3. Chuyen tien                              \033[32;1m|" << endl;
-    cout << "|\033[36;1m         4. Xem noi dung giao dich                   \033[32;1m|" << endl;
-    cout << "|\033[36;1m         5. Doi ma pin                               \033[32;1m|" << endl;
-    cout << "|\033[36;1m         6. Thoat                                    \033[32;1m|" << endl;
-    cout << "=============================================================" << endl;
+    cout << "\033[34;1m";
+    cout << "===========================================================" << endl;
+    cout << "========================\033[97;1m MENU USER\033[34;1m =======================" << endl;
+    cout << "|\033[36;1m         1. Xem thong tin tai khoan                     \033[34;1m |" << endl;
+    cout << "|\033[36;1m         2. Rut tien                                    \033[34;1m |" << endl;
+    cout << "|\033[36;1m         3. Chuyen tien                                 \033[34;1m |" << endl;
+    cout << "|\033[36;1m         4. Xem noi dung giao dich                      \033[34;1m |" << endl;
+    cout << "|\033[36;1m         5. Doi ma pin                                  \033[34;1m |" << endl;
+    cout << "|\033[36;1m         6. Thoat chuong trinh/Dang xuat                \033[34;1m |" << endl;
+    cout << "===========================================================" << endl;
     cout << "\033[36;1m";
+
+    int iChoice;
+    cin >> iChoice;
+    return iChoice;
 }
 
 void ATMView::displayCardList(const MyUnorderedMap<std::string, UserAccount>& listUsers) {
@@ -191,18 +195,19 @@ void ATMView::displayUserInfo(const UserAccount& user) {
     enableANSIColors();
 
     cout << "\033[32;1m"
-        << "\n======================= "
+        << "\n=================== "
         << "\033[36;1m"
         << "THONG TIN TAI KHOAN"
         << "\033[32;1m"
-        << " =======================\n";
+        << " ===================" << endl;
 
-    cout << "\033[36;1m";
-    cout << "ID: " << user.getID() << endl;
-    cout << "Ten tai khoan: " << user.getAccountName() << endl;
-    cout << "So du: " << user.getBalance() << endl;
-    cout << "Loai tien te: " << user.getCurrency() << endl;
-
+    cout << "\033[97m";
+    
+        cout << "\033[90mID:            \033[0m" << user.getID() << "\n";
+        cout << "\033[90mTen tai khoan: \033[0m" << user.getAccountName() << "\n";
+        cout << "\033[90mSo du :        \033[0m" << user.getBalance() << "\n";
+        cout << "\033[90mLoai tien te:  \033[0m" << user.getCurrency() << "\n";
+        cout << "\033[93m===========================================================\n\033[0m";
     cout << "\033[0m";
 }
 
@@ -430,6 +435,46 @@ string ATMView::unlockAccountUserFrame() {
     string strID;
     cin >> strID;
     return strID;
+}
+
+long long ATMView::withdrawMoneyFrame() {
+    enableANSIColors();
+
+
+    cout << "\033[32;1m"
+        << "\n========================= "
+        << "\033[36;1m"
+        << "RUT TIEN"
+        << "\033[32;1m"
+        << " ========================\n";
+    cout << "\033[0m";
+
+    cout << "So tien can rut: ";
+    string strSoTien;
+    cin >> strSoTien;
+    if (!Validation::withdrawInput(strSoTien)) return -1;
+    long long llSoTien = stoll(strSoTien);
+    return llSoTien;
+}
+
+string ATMView::withdrawUserFailFrame() {
+    enableANSIColors();
+
+    cout << "\033[32;1m";
+    cout << "\033[38;5;45m===========================================================\n";
+
+    cout << "|\033[91m              So tien can rut khong hop le               \033[38;5;45m|\n";
+
+    cout << "\033[36;1m";
+    cout << "|\033[96;1m     Nhap [1] de lam lai, nhap phim bat ki de thoat      \033[38;5;45m|\n";
+
+    cout << "===========================================================\n";
+
+    cout << "\033[0m";
+
+    string strChoice;
+    cin >> strChoice;
+    return strChoice;
 }
 
 void ATMView::deleteUserSuccessFrame() {

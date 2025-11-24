@@ -38,4 +38,25 @@ namespace Validation {
         }
         return true; 
     }
+
+    bool withdrawInput(const std::string& input) {
+
+        if (input.empty()) return false;
+
+        if (!isAllDigits(input)) return false;
+
+        long long value = 0;
+
+        try {
+            value = stoll(input);
+        }
+        catch (...) {
+            return false; 
+        }
+
+        if (value <= 0) return false;
+
+        return true;
+    }
+
 }

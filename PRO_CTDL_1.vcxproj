@@ -125,7 +125,6 @@
   <ItemGroup>
     <ClCompile Include="AdminManager.cpp" />
     <ClCompile Include="ATMView.cpp" />
-    <ClCompile Include="Constants.cpp" />
     <ClCompile Include="DataRepository.cpp" />
     <ClCompile Include="MyUnorderedMap.cpp" />
     <ClCompile Include="PRO_CTDL_1.cpp" />
@@ -140,7 +139,6 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DataRepository.h" />
     <ClInclude Include="MyUnorderedMap.h" />
-    <ClInclude Include="TheTu.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="UserManager.h" />
     <ClInclude Include="Validation.h" />
