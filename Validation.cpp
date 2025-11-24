@@ -38,7 +38,14 @@ namespace Validation {
         }
         return true; 
     }
+    bool isValidPin(const std::string& pin) {
+        if (pin.length() != 6) return false;
 
+        for (char c : pin) {
+            if (!isdigit(c)) return false;
+        }
+        return true; 
+    }
     bool withdrawInput(const std::string& input) {
 
         if (input.empty()) return false;

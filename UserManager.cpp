@@ -9,56 +9,114 @@
 
 UserManager::UserManager(){}
 
-UserAccount UserManager::loginUser(DataRepository& mainData)
+UserAccount* UserManager::loginUser(DataRepository& mainData)
 {
     ATMView atmview;
-    
+   
+    MyUnorderedMap<std::string, UserAccount> listUsers = mainData.getUserList();
+    UserAccount loginUserInput;
 
     while (true) {
+        loginUserInput = atmview.displayUserLoginForm(); 
 
-        // Hiển thị khung nhập ID + pass
-        loginUserInput = atmview.displayUserLoginFrame();
+        UserAccount* userPtr = listUsers.find(loginUserInput.getID());
 
-        // Tìm user theo ID
-        auto userPtr = users.find(loginUserInput.getUser());
-
-        // Không tìm thấy user → sai
-        if (userPtr == nullptr) {
-            string choice = atmview.loginUserFailFrame("Tài khoản không tồn tại!");
-            if (choice == "1") continue;
+        if (userPtr == nullptr) { 
+            string choice = atmview.loginUserFailFrame();
+            if (choice == "1") continue; 
             else return nullptr;
         }
 
-        User& realUser = *userPtr;
+        UserAccount& realUser = *userPtr;
 
-        // Kiểm tra tài khoản có bị khóa không
-        if (realUser.isLocked()) {
-            atmview.showMessage("Tài khoản đã bị khóa. Vui lòng liên hệ admin.");
+        
+        if (realUser.isLocked()) { 
+            atmview.displayUserLoginForm();
             return nullptr;
         }
 
-        // Kiểm tra mật khẩu
-        if (realUser.getPass() != loginUserInput.getPass()) {
+        
+        if (realUser.getPin() != loginUserInput.getPin()) {
             realUser.increaseFailCount();
 
-            if (realUser.getFailCount() >= 3) {
-                realUser.lockAccount();
-                atmview.showMessage("Nhập sai 3 lần. Tài khoản đã bị khóa!");
+            if (realUser.getFailCount()>=3) { 
+                realUser.setLocked(true); 
+
+                MyUnorderedMap<string,UserAccount> listUserLock = mainData.getUserListLock();
+                listUserLock.insert(realUser.getID(), realUser); 
+                mainData.setUserListLock(listUserLock);
+                mainData.setUserList(listUsers);
+
+                std::ofstream idFile(realUser.getID() + ".txt");
+                if (!idFile) {
+                    return nullptr;
+                }
+                idFile << realUser.getID() << "\n";
+                idFile << realUser.getAccountName() << "\n";
+                idFile << realUser.getBalance() << "\n";
+                idFile << realUser.getCurrency() << "\n";
+                idFile << "BI KHOA" << "\n";
+                idFile.close();
+
+                atmview.accountLocked();
                 return nullptr;
             }
 
-            string choice = atmview.loginUserFailFrame("Sai mật khẩu!");
-            if (choice == "1") continue;
+            string choice = atmview.loginUserFailFrame(); 
+            if (choice == "1") continue; 
             else return nullptr;
         }
 
-        // Đăng nhập thành công
-        realUser.resetFailCount();
-        atmview.showMessage("Đăng nhập thành công!");
-        return &realUser;
+        
+        realUser.setFailCount(0);
+        mainData.setUserList(listUsers);
+
+        if (realUser.getPin() == DEFAULT_PIN) {
+            changePin(mainData, realUser);
+        }
+
+        // 5. Xử lý Đăng nhập lần đầu (Yêu cầu phải đổi mã pin) [1]
+        // Vì yêu cầu phải đổi PIN ngay trước khi vào menu chính, logic này cần được thêm vào.
+        // Tuy nhiên, do không có implementation của hàm đổi PIN tại đây, 
+        // ta sẽ dựa vào `isFirstLogin()` [11] để caller (main) xử lý.
+
+        // Nếu user đã vượt qua tất cả các kiểm tra:
+        return &realUser; // Trả về con trỏ tới UserAccount đã đăng nhập
     }
 }
+bool UserManager::changePin(DataRepository& mainData, const UserAccount& currentUser) {
+    ATMView atmview;
+    bool inputCorect = false;
+    vector<string> input;
+    while (!inputCorect) {
+        input = atmview.changePinAccountUserFrame();
 
+        if (currentUser.getPin()!=input[0]||input[1]!=input[2]||!Validation::isValidPin(input[1]))
+        {
+            string strChoice = atmview.changePinUserFailFrame();
+            if (strChoice == "1")
+                continue;
+            else
+                return false;
+        }
+        inputCorect = true;
+    }
+
+    MyUnorderedMap<string, UserAccount>listUser = mainData.getUserList();
+    auto crUser = listUser.find(currentUser.getID());
+    crUser->setPin(input[1]);
+    mainData.setUserList(listUser);
+
+    ofstream fout(CARD_LIST_FILE_NAME, ios::trunc);
+    if (!fout) {
+        return false;
+    }
+    listUser.for_each([&](const string& id, const UserAccount& user) {
+        fout << id << " " << user.getPin() << '\n';
+        });
+    fout.close();
+    return true;
+}
 bool UserManager::withdrawMoney(DataRepository& mainData,const UserAccount& currentUser) {
     ATMView atmview;
     bool inputCorect = false;
@@ -83,7 +141,40 @@ bool UserManager::withdrawMoney(DataRepository& mainData,const UserAccount& curr
     crUser->setBalance(newbalance);
     mainData.setUserList(listUser);
 
+    time_t now = time(0);
+    std::tm localTime;
+    localtime_s(&localTime, &now);
+    char buffer[20];
+    std::strftime(buffer, sizeof(buffer), "%H:%M:%S %d-%m-%Y", &localTime);
 
+    std::string filename = "LichSu"+crUser->getID()+".txt";
+    std::ofstream file(filename, std::ios::app);
+    if (file.is_open()) {
+        file << crUser->getID()<<": RUT TIEN "<<llSoTienRut<<" VND, vao luc "<<buffer << "\n";
+        file.close();             
+    }
+    else {
+        return false;
+    }
+
+    std::ofstream idFile(crUser->getID() + ".txt"); 
+    if (!idFile) {
+        return false;
+    }
+    idFile << crUser->getID() << "\n";
+    idFile << crUser->getAccountName() << "\n";
+    idFile << crUser->getBalance() << "\n";
+    idFile << crUser->getCurrency() << "\n";
+    if (!crUser->isLocked()) { 
+        idFile << "KHONG BI KHOA" << "\n";
+    }
+    else {
+        idFile << "BI KHOA" << "\n";
+    }
+    idFile.close();
+
+    atmview.withdrawSuccessFrame();
+    return true;
 
 }
 
@@ -93,7 +184,7 @@ void UserManager::runUserMenu(DataRepository& mainData,const UserAccount& curren
 
     while (true)
     {
-        int iChoice = atmview.displayAdminMenu();
+        int iChoice = atmview.displayUserMenu();
 
         switch (iChoice)
         {
@@ -102,10 +193,9 @@ void UserManager::runUserMenu(DataRepository& mainData,const UserAccount& curren
             break;
 
         case 2:
-            withdrawMoney();
+            withdrawMoney(mainData,currentUser);
             break;
-
-        case 3:
+        /*case 3:
             deleteAccountUser(mainData);
             break;
 

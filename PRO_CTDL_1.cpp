@@ -31,6 +31,9 @@ int main()
     }
     if (strChoice == "2") {
         UserAccount* currentUser = mainUserController.loginUser(mainData);
+        if (currentUser != nullptr) {
+            mainUserController.runUserMenu(mainData, *currentUser);
+        }
     }
     
 

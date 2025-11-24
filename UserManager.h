@@ -20,8 +20,9 @@ public:
 
     UserManager();
     void runUserMenu(DataRepository& mainData,const UserAccount& currentUser);
-    UserAccount loginUser(DataRepository& mainData);
+    UserAccount* loginUser(DataRepository& mainData);
     bool withdrawMoney(DataRepository& mainData, const UserAccount& currentUser);
+    bool changePin(DataRepository& mainData, const UserAccount& currentUser);
 
 };
 

@@ -57,6 +57,7 @@ public:
     std::string getCurrency() const { return _strCurrency; }
     bool isLocked() const { return _bIsLocked; }
     bool isFirstLogin() const { return _bIsFirstLogin; }
+    int getFailCount() const { return _iFailCount; }
 
     void setID(const std::string& id) { _strID = id; }
     void setPin(const std::string& pin) { _strPin = pin; }
@@ -65,6 +66,8 @@ public:
     void setCurrency(const std::string& currency) { _strCurrency = currency; }
     void setLocked(bool locked) { _bIsLocked = locked; }
     void setFirstLogin(bool firstLogin) { _bIsFirstLogin = firstLogin; }
+    void increaseFailCount() { _iFailCount++; }
+    void setFailCount(int fc) { _iFailCount = fc; }
 
 private:
    
@@ -73,7 +76,7 @@ private:
     long long       _lBalance;        
     std::string _strCurrency;      
     std::string _strPin;
-   
+    int _iFailCount;
     bool        _bIsLocked;       
     bool        _bIsFirstLogin;    
 };

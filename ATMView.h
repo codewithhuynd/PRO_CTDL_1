@@ -48,6 +48,11 @@ public:
     void unlockAccountUserSuccess();
     long long withdrawMoneyFrame();
     string withdrawUserFailFrame();
+    void withdrawSuccessFrame();
+    string loginUserFailFrame();
+    void accountLocked();
+    vector<string> changePinAccountUserFrame();
+    string changePinUserFailFrame();
   
 
 };

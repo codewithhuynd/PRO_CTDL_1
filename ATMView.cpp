@@ -265,6 +265,41 @@ string ATMView::loginAdminFailFrame() {
     cin >> strChoice;
     return strChoice;
 }
+
+string ATMView::loginUserFailFrame() {
+    enableANSIColors();
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "|\033[91m        ID, Pin khong dung hoac tai khoan da bi khoa!    \033[38;5;45m|\n";
+    cout << "|\033[96;1m   Nhap [1] de dang nhap lai, nhap phim bat ki de thoat  \033[38;5;45m|\n";
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "\033[0m";
+
+    string strChoice;
+    cin >> strChoice;
+    return strChoice;
+}
+
+void ATMView::accountLocked() {
+    enableANSIColors();
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "|\033[91m          Sai mat khau 3 lan. Tai khoan da bi khoa!      \033[38;5;45m|\n";
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "\033[0m";
+}
+
+
 string ATMView::addUserFailFrame() {
     enableANSIColors();
 
@@ -361,22 +396,47 @@ UserAccount ATMView::displayAddUserFrame() {
 }
 
 string ATMView::deleteAccountUserFrame() {
-
     enableANSIColors();
-
-
     cout << "\033[32;1m"
         << "\n================ "
         << "\033[36;1m"
         << "NHAP ID TAI KHOAN CAN XOA"
         << "\033[32;1m"
         << " ================\n";
-    cout << "\033[97;1m";
-
+    cout << "\033[0m";
     cout << "ID: \033[0m";
     string strID;
     cin >> strID;
     return strID;
+}
+
+vector<string> ATMView::changePinAccountUserFrame() {
+
+    enableANSIColors();
+    vector<string> input;
+
+    cout << "\033[32;1m"
+        << "\n======================= "
+    << "\033[36;1m"
+        << "DOI MA PIN"
+    << "\033[32;1m"
+        << " ========================\n";
+    cout << "\033[0m";
+
+    cout << "Nhap mat khau hien tai: \033[0m";
+    string strCrPin;
+    strCrPin = readPassword();
+    input.push_back(strCrPin);
+    cout << "Nhap mat khau moi:      ";
+    string strNewPin;
+    strNewPin = readPassword();
+    input.push_back(strNewPin);
+    cout << "Nhap lai de xac nhan:   ";
+    string strRtPin;
+    strRtPin = readPassword();
+    input.push_back(strRtPin);
+    cout << "\n";
+    return input;
 }
 
 string ATMView::deleteAccountUserFailFrame() {
@@ -398,7 +458,25 @@ string ATMView::deleteAccountUserFailFrame() {
     cin >> strChoice;
     return strChoice;
 }
+string ATMView::changePinUserFailFrame() {
+    enableANSIColors();
 
+    cout << "\033[32;1m";
+    cout << "\033[38;5;45m===========================================================\n";
+
+    cout << "|\033[91m          Sai ma pin hoac ma pin khong xac thuc          \033[38;5;45m|\n";
+
+    cout << "\033[36;1m";
+    cout << "|\033[96;1m     Nhap [1] de lam lai, nhap phim bat ki de thoat      \033[38;5;45m|\n";
+
+    cout << "===========================================================\n";
+
+    cout << "\033[0m";
+
+    string strChoice;
+    cin >> strChoice;
+    return strChoice;
+}
 string ATMView::unlockAccountUserFailFrame() {
     enableANSIColors();
 
@@ -475,6 +553,19 @@ string ATMView::withdrawUserFailFrame() {
     string strChoice;
     cin >> strChoice;
     return strChoice;
+}
+
+void ATMView::withdrawSuccessFrame() {
+    enableANSIColors();
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "|\033[92;1m                    Rut tien thanh cong                  \033[38;5;45m|\n";
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "\033[0m\n";
 }
 
 void ATMView::deleteUserSuccessFrame() {

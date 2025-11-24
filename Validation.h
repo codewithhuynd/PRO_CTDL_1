@@ -12,6 +12,7 @@ namespace Validation {
     bool isValidIDFormat(const std::string& id);
     bool isValidNameFormat(const std::string& id);
     bool withdrawInput(const std::string& input);
+    bool isValidPin(const std::string& pin);
 }
 
 #endif

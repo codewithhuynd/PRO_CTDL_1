@@ -85,7 +85,6 @@ bool AdminManager::addAccountUser(DataRepository& mainData) {
         std::cerr << "Khong the tao file LichSu" << newUser.getID() << ".txt\n";
         return false;
     }
-    idFile
     idFile2.close();
 
     ofstream fout(CARD_LIST_FILE_NAME, ios::trunc);
