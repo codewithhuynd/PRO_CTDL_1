@@ -10,7 +10,7 @@ public:
     UserAccount()
         : _strID(""), _strPin(""), _strAccountName(""),
         _lBalance(0.0f), _strCurrency("VND"),
-        _iFailCount(0), // <-- Initialize _iFailCount here
+        _iFailCount(0), 
         _bIsLocked(false), _bIsFirstLogin(true)
     {
     }
@@ -24,7 +24,7 @@ public:
         bool bIsFirstLogin = true)
         : _strID(strID), _strPin(strPin), _strAccountName(strAccountName),
         _lBalance(fBalance), _strCurrency(strCurrency),
-        _iFailCount(0), // <-- Add initialization here
+        _iFailCount(0),
         _bIsLocked(bIsLocked), _bIsFirstLogin(bIsFirstLogin)
     {
     }
@@ -32,7 +32,7 @@ public:
     UserAccount(const UserAccount& other)
         : _strID(other._strID), _strPin(other._strPin), _strAccountName(other._strAccountName),
         _lBalance(other._lBalance), _strCurrency(other._strCurrency),
-        _iFailCount(other._iFailCount), // <-- Add initialization here
+        _iFailCount(other._iFailCount), 
         _bIsLocked(other._bIsLocked), _bIsFirstLogin(other._bIsFirstLogin)
     {
     }
@@ -46,7 +46,7 @@ public:
             _strAccountName = other._strAccountName;
             _lBalance = other._lBalance;
             _strCurrency = other._strCurrency;
-            _iFailCount = other._iFailCount; // <-- Add assignment here
+            _iFailCount = other._iFailCount; 
             _bIsLocked = other._bIsLocked;
             _bIsFirstLogin = other._bIsFirstLogin;
         }
