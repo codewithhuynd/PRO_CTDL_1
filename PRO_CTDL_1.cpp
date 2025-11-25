@@ -30,9 +30,9 @@ int main()
         }
     }
     if (strChoice == "2") {
-        UserAccount* currentUser = mainUserController.loginUser(mainData);
-        if (currentUser != nullptr) {
-            mainUserController.runUserMenu(mainData, *currentUser);
+        pair<bool,string> currentUser = mainUserController.loginUser(mainData);
+        if (currentUser.first ) {
+            mainUserController.runUserMenu(mainData, currentUser.second);
         }
     }
     

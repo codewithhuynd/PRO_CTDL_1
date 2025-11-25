@@ -53,6 +53,10 @@ public:
     void accountLocked();
     vector<string> changePinAccountUserFrame();
     string changePinUserFailFrame();
+    void changePinSuccessFrame();
+    pair<string, long long> transferMoneyFrame();
+    string transferMoneyFailFrame();
+    void transferMoneySuccessFrame();
   
 
 };

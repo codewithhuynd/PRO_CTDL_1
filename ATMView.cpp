@@ -93,8 +93,10 @@ int ATMView::displayAdminMenu() {
     cout << "===========================================================" << endl;
     cout << "\033[36;1m";
 
-    int iChoice;
-    cin >> iChoice;
+    string strChoice;
+    cin >> strChoice;
+    if (!Validation::isAllDigits(strChoice)) return -1;
+    int iChoice = stoi(strChoice);
     return iChoice;
 
 }
@@ -144,8 +146,10 @@ int ATMView::displayUserMenu() {
     cout << "===========================================================" << endl;
     cout << "\033[36;1m";
 
-    int iChoice;
-    cin >> iChoice;
+    string strChoice;
+    cin >> strChoice;
+    if (!Validation::isAllDigits(strChoice)) return -1;
+    int iChoice = stoi(strChoice);
     return iChoice;
 }
 
@@ -215,11 +219,12 @@ void ATMView::displayTransactionHistory(const std::string& id) {
     enableANSIColors();
 
     cout << "\033[32;1m"
-        << "\n======================= "
+        << "\n==================== "
         << "\033[36;1m"
-        << "LICH SU GIAO DICH"
+        << "LICH SU GIAO DICH"   
         << "\033[32;1m"
-        << " =======================\n";
+        << " ====================\n";
+    cout << "\033[0m";
 
     string fileName = "LichSu" + id + ".txt";
     ifstream file(fileName);
@@ -231,15 +236,22 @@ void ATMView::displayTransactionHistory(const std::string& id) {
         return;
     }
 
-    cout << "\033[36;1m";
+    cout << "\033[0m";
     string line;
     int count = 1;
     while (getline(file, line)) {
-        cout << count++ << ". " << line << endl;
+        count++;
+        cout << line << endl;
     }
 
     if (count == 1) {
-        cout << "\033[91m" << "Khong co giao dich nao duoc luu!\n";
+        cout << "\033[32;1m";
+        cout << "\033[38;5;45m===========================================================\n";
+
+        cout << "|\033[91m            Khong co giao dich nao duoc luu              \033[38;5;45m|\n";
+
+        cout << "\033[36;1m";
+        cout << "===========================================================\n";
     }
 
     file.close();
@@ -535,6 +547,48 @@ long long ATMView::withdrawMoneyFrame() {
     return llSoTien;
 }
 
+pair<string, long long> ATMView::transferMoneyFrame() {
+    enableANSIColors();
+
+
+    cout << "\033[32;1m"
+        << "\n======================= "
+        << "\033[36;1m"
+        << "CHUYEN TIEN"
+        << "\033[32;1m"
+        << " =======================\n";
+    cout << "\033[0m";
+
+    cout << "ID nguoi nhan:      ";
+    string strNNhan;
+    cin >> strNNhan;
+    cout << "So tien can chuyen: ";
+    string strSoTien;
+    cin >> strSoTien;
+    if (!Validation::isAllDigits(strSoTien)) return { "",0 };
+    long long llSoTien = stoll(strSoTien);
+    return { strNNhan,llSoTien };
+}
+string ATMView::transferMoneyFailFrame() {
+    enableANSIColors();
+
+    cout << "\033[32;1m";
+    cout << "\033[38;5;45m===========================================================\n";
+
+    cout << "|\033[91m Tai khoan nhan khong dung, so tien chuyen khong hop le  \033[38;5;45m|\n";
+
+    cout << "\033[36;1m";
+    cout << "|\033[96;1m     Nhap [1] de lam lai, nhap phim bat ki de thoat      \033[38;5;45m|\n";
+
+    cout << "===========================================================\n";
+
+    cout << "\033[0m";
+
+    string strChoice;
+    cin >> strChoice;
+    return strChoice;
+}
+
 string ATMView::withdrawUserFailFrame() {
     enableANSIColors();
 
@@ -568,6 +622,19 @@ void ATMView::withdrawSuccessFrame() {
     cout << "\033[0m\n";
 }
 
+void ATMView::transferMoneySuccessFrame() {
+    enableANSIColors();
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "|\033[92;1m                   Chuyen tien thanh cong                \033[38;5;45m|\n";
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "\033[0m\n";
+}
+
 void ATMView::deleteUserSuccessFrame() {
     enableANSIColors();
 
@@ -581,6 +648,21 @@ void ATMView::deleteUserSuccessFrame() {
 
     cout << "\033[0m\n";
     
+}
+
+void ATMView::changePinSuccessFrame() {
+    enableANSIColors();
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "|\033[92;1m                  Doi ma pin thanh cong                  \033[38;5;45m|\n";
+
+    cout << "\033[38;5;45m";
+    cout << "===========================================================\n";
+
+    cout << "\033[0m\n";
+
 }
 
 void ATMView::unlockAccountUserSuccess() {

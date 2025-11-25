@@ -19,10 +19,11 @@ class UserManager
 public:
 
     UserManager();
-    void runUserMenu(DataRepository& mainData,const UserAccount& currentUser);
-    UserAccount* loginUser(DataRepository& mainData);
+    void runUserMenu(DataRepository& mainData, const string& id);
+    pair<bool,string> loginUser(DataRepository& mainData);
     bool withdrawMoney(DataRepository& mainData, const UserAccount& currentUser);
     bool changePin(DataRepository& mainData, const UserAccount& currentUser);
+    bool transferMoney(DataRepository& mainData, const UserAccount& currentUser);
 
 };
 
