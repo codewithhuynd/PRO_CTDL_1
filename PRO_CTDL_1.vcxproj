@@ -136,7 +136,6 @@
     <ClInclude Include="Admin.h" />
     <ClInclude Include="AdminManager.h" />
     <ClInclude Include="ATMView.h" />
-    <ClInclude Include="Constants.h" />
     <ClInclude Include="DataRepository.h" />
     <ClInclude Include="MyUnorderedMap.h" />
     <ClInclude Include="User.h" />

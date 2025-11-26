@@ -56,9 +56,6 @@
     <ClInclude Include="UserManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Constants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DataRepository.h">
       <Filter>Header Files</Filter>
     </ClInclude>
