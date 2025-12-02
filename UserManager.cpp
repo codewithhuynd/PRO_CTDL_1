@@ -183,6 +183,7 @@ bool UserManager::transferMoney(DataRepository& mainData, const UserAccount& cur
         nguoiNhan = atmview.transferMoneyFrame();
         userReceive = listUser.find(nguoiNhan.first);
         if (userReceive==nullptr
+            ||userReceive->getID()==currentUser.getID()
             ||nguoiNhan.second< MIN_WITHDRAWAL_AMOUNT
             ||nguoiNhan.second>currentUser.getBalance()- MIN_REMAINING_BALANCE
             ||nguoiNhan.second%MIN_REMAINING_BALANCE!=0)
